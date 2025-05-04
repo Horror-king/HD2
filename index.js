@@ -15,12 +15,12 @@ global.utils = {
 };
 
 const app = express();
-const PORT = process.env.PORT || config.dashBoard.port || 3000; // Default to 3000 if not specified
+const PORT = process.env.PORT || config.dashBoard.port || 3000;
 const COMMANDS_DIR = path.join(__dirname, "commands");
 const PUBLIC_DIR = path.join(__dirname, "public");
-const PREFIX = config.prefix || "!"; // Default prefix if not specified
+const PREFIX = config.prefix || "!";
 
-// Render-specific uptime configuration
+// Render-specific configuration
 const isRender = process.env.RENDER === 'true';
 const renderExternalUrl = process.env.RENDER_EXTERNAL_URL;
 
@@ -31,7 +31,7 @@ if (config.autoUptime?.enable || isRender) {
   global.utils.log.info("RENDER UPTIME", `Monitoring endpoint available at: ${myUrl}/uptime`);
   global.utils.log.info("UPTIMEROBOT TIP", `Add this URL to UptimeRobot: ${myUrl}/health`);
 
-  // Simple keep-alive endpoint for UptimeRobot
+  // Simple keep-alive endpoint
   app.get("/uptime", (req, res) => {
     res.status(200).json({
       status: "OK",
@@ -42,7 +42,7 @@ if (config.autoUptime?.enable || isRender) {
     });
   });
 
-  // Comprehensive health check endpoint
+  // Comprehensive health check
   app.get("/health", (req, res) => {
     res.json({
       status: "healthy",
@@ -60,7 +60,7 @@ if (config.autoUptime?.enable || isRender) {
     });
   });
 
-  // Auto-ping for Render's 5-minute inactivity timeout
+  // Auto-ping for Render's inactivity timeout
   if (isRender) {
     const pingInterval = setInterval(() => {
       axios.get(`${myUrl}/uptime`)
@@ -68,7 +68,6 @@ if (config.autoUptime?.enable || isRender) {
         .catch(err => global.utils.log.err("RENDER PING", err.message));
     }, 4 * 60 * 1000); // Ping every 4 minutes
 
-    // Cleanup on exit
     process.on('exit', () => clearInterval(pingInterval));
   }
 }
@@ -113,7 +112,7 @@ function handleCommand(input) {
   return { commandName, args, text };
 }
 
-// API handler
+// API handler with improved AI command
 app.post("/api/command", async (req, res) => {
   try {
     const { message } = req.body;
@@ -131,22 +130,43 @@ app.post("/api/command", async (req, res) => {
         const response = await axios.get(
           `https://yau-ai-runing-station.vercel.app/ai?prompt=${encodeURIComponent(cmd.text)}&cb=${Date.now()}`,
           { 
-            headers: { Accept: "application/json" },
-            timeout: 10000
+            headers: { 
+              Accept: "application/json",
+              "User-Agent": "GoatBot/1.0"
+            },
+            timeout: 15000,
+            validateStatus: () => true
           }
         );
 
-        let data;
-        try {
-          data = JSON.parse(response.data);
-          if (typeof data === "string") data = JSON.parse(data);
-        } catch {
-          return res.status(500).json({ reply: "❌ AI returned invalid JSON format" });
+        let responseData;
+        if (typeof response.data === 'string') {
+          try {
+            responseData = JSON.parse(response.data);
+          } catch (e) {
+            if (response.data.includes('error') || response.status !== 200) {
+              throw new Error(response.data || `API returned status ${response.status}`);
+            }
+            return res.json({ reply: response.data });
+          }
+        } else {
+          responseData = response.data;
         }
 
-        return res.json({ reply: data?.response || JSON.stringify(data) || "⚠️ No response from AI" });
+        if (responseData.response) {
+          return res.json({ reply: responseData.response });
+        } else if (responseData.message) {
+          return res.json({ reply: responseData.message });
+        } else if (responseData.data) {
+          return res.json({ reply: responseData.data });
+        } else {
+          return res.json({ reply: JSON.stringify(responseData) || "⚠️ No recognizable response format" });
+        }
       } catch (aiError) {
-        return res.status(500).json({ reply: `❌ AI Error: ${aiError.message}` });
+        console.error("AI Processing Error:", aiError);
+        return res.status(500).json({ 
+          reply: `❌ AI Error: ${aiError.message.replace(/[\n\r]/g, ' ').substring(0, 200)}` 
+        });
       }
     }
 
@@ -191,4 +211,12 @@ app.listen(PORT, () => {
 process.on('SIGTERM', () => {
   console.log('SIGTERM received. Shutting down gracefully...');
   process.exit(0);
+});
+
+process.on('unhandledRejection', (err) => {
+  global.utils.log.err("UNHANDLED REJECTION", err);
+});
+
+process.on('uncaughtException', (err) => {
+  global.utils.log.err("UNCAUGHT EXCEPTION", err);
 });
