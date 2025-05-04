@@ -11,49 +11,66 @@ global.utils = {
     info: (...args) => console.log("[INFO]", ...args),
     err: (...args) => console.error("[ERROR]", ...args)
   },
-  getText: (category, key, val) => `✅ Uptime system is active at: ${val}`
+  getText: () => "✅ Bot is running smoothly on Render"
 };
 
 const app = express();
-const PORT = process.env.PORT || config.dashBoard.port;
+const PORT = process.env.PORT || config.dashBoard.port || 3000; // Default to 3000 if not specified
 const COMMANDS_DIR = path.join(__dirname, "commands");
 const PUBLIC_DIR = path.join(__dirname, "public");
-const PREFIX = config.prefix;
+const PREFIX = config.prefix || "!"; // Default prefix if not specified
 
-// Auto Uptime
-if (global.timeOutUptime) clearTimeout(global.timeOutUptime);
-if (config.autoUptime.enable) {
-  let myUrl = config.autoUptime.url || (
-    process.env.REPL_OWNER
-      ? `https://${process.env.REPL_SLUG}.${process.env.REPL_OWNER}.repl.co`
-      : process.env.API_SERVER_EXTERNAL === "https://api.glitch.com"
-      ? `https://${process.env.PROJECT_DOMAIN}.glitch.me`
-      : `http://localhost:${PORT}`
-  );
+// Render-specific uptime configuration
+const isRender = process.env.RENDER === 'true';
+const renderExternalUrl = process.env.RENDER_EXTERNAL_URL;
 
-  let status = "ok";
-  setTimeout(async function autoUptime() {
-    try {
-      await axios.get(myUrl + "/uptime");
-      if (status !== "ok") {
-        status = "ok";
-        global.utils.log.info("UPTIME", "Bot is online");
+// Enhanced Uptime System for Render
+if (config.autoUptime?.enable || isRender) {
+  const myUrl = renderExternalUrl || config.autoUptime?.url || `http://localhost:${PORT}`;
+  
+  global.utils.log.info("RENDER UPTIME", `Monitoring endpoint available at: ${myUrl}/uptime`);
+  global.utils.log.info("UPTIMEROBOT TIP", `Add this URL to UptimeRobot: ${myUrl}/health`);
+
+  // Simple keep-alive endpoint for UptimeRobot
+  app.get("/uptime", (req, res) => {
+    res.status(200).json({
+      status: "OK",
+      timestamp: Date.now(),
+      uptime: process.uptime(),
+      platform: "Render",
+      monitor: "UptimeRobot"
+    });
+  });
+
+  // Comprehensive health check endpoint
+  app.get("/health", (req, res) => {
+    res.json({
+      status: "healthy",
+      version: require('./package.json').version,
+      node: process.version,
+      memory: process.memoryUsage(),
+      uptime: process.uptime(),
+      environment: process.env.NODE_ENV || "development",
+      platform: process.platform,
+      render: isRender,
+      endpoints: {
+        uptime: `${myUrl}/uptime`,
+        api: `${myUrl}/api/command`
       }
-    } catch (e) {
-      const err = e.response?.data || e;
-      if (status !== "ok") return;
-      status = "failed";
+    });
+  });
 
-      if (err.statusAccountBot === "can't login") {
-        global.utils.log.err("UPTIME", "Can't login account bot");
-      } else if (err.statusAccountBot === "block spam") {
-        global.utils.log.err("UPTIME", "Your account is blocked");
-      }
-    }
-    global.timeOutUptime = setTimeout(autoUptime, config.autoUptime.timeInterval);
-  }, config.autoUptime.timeInterval);
+  // Auto-ping for Render's 5-minute inactivity timeout
+  if (isRender) {
+    const pingInterval = setInterval(() => {
+      axios.get(`${myUrl}/uptime`)
+        .then(() => global.utils.log.info("RENDER PING", "Keeping Render instance alive"))
+        .catch(err => global.utils.log.err("RENDER PING", err.message));
+    }, 4 * 60 * 1000); // Ping every 4 minutes
 
-  global.utils.log.info("AUTO UPTIME", global.utils.getText("autoUptime", "autoUptimeTurnedOn", myUrl));
+    // Cleanup on exit
+    process.on('exit', () => clearInterval(pingInterval));
+  }
 }
 
 // Express setup
@@ -61,11 +78,6 @@ fs.ensureDirSync(COMMANDS_DIR);
 fs.ensureDirSync(PUBLIC_DIR);
 app.use(express.json());
 app.use(express.static(PUBLIC_DIR));
-
-// Routes
-app.get("/uptime", (req, res) => {
-  res.send("✅ Bot is alive");
-});
 
 // Command loader
 const commands = {};
@@ -118,7 +130,10 @@ app.post("/api/command", async (req, res) => {
       try {
         const response = await axios.get(
           `https://yau-ai-runing-station.vercel.app/ai?prompt=${encodeURIComponent(cmd.text)}&cb=${Date.now()}`,
-          { headers: { Accept: "application/json" }, responseType: "text" }
+          { 
+            headers: { Accept: "application/json" },
+            timeout: 10000
+          }
         );
 
         let data;
@@ -156,7 +171,6 @@ app.post("/api/command", async (req, res) => {
     if (!res.headersSent) {
       res.json({ reply: replies.length === 1 ? replies[0] : replies });
     }
-
   } catch (error) {
     console.error("Server Error:", error);
     res.status(500).json({ reply: `❌ Server Error: ${error.message}` });
@@ -165,6 +179,16 @@ app.post("/api/command", async (req, res) => {
 
 // Start server
 app.listen(PORT, () => {
-  console.log(`🚀 Server running at http://localhost:${PORT}`);
-  console.log(`🔹 Prefix: "${PREFIX}"`);
+  console.log(`🚀 Server running on port ${PORT}`);
+  console.log(`🔹 Command prefix: "${PREFIX}"`);
+  if (isRender && renderExternalUrl) {
+    console.log(`🌐 Render External URL: ${renderExternalUrl}`);
+    console.log(`⏱️ UptimeRobot monitoring URL: ${renderExternalUrl}/health`);
+  }
+});
+
+// Graceful shutdown
+process.on('SIGTERM', () => {
+  console.log('SIGTERM received. Shutting down gracefully...');
+  process.exit(0);
 });
