@@ -22,19 +22,31 @@ module.exports = {
       return message.reply("⚠️ | Please provide a prompt. Example: /flux a futuristic cityscape");
     }
 
-    // Send a waiting message
-    await message.reply("⏳ | Please wait while your AI image is being generated...");
+    const apiUrl = "https://ga1-8j62.onrender.com";
+
+    await message.reply("⏳ | Waking up the AI server...");
 
     try {
+      // Warm-up using fake prompt to activate Render
+      await axios.get(`${apiUrl}/generate?prompt=wakeup`, { timeout: 10000 });
+
+      // Now generate the real image
+      await message.reply("⏳ | Generating your AI image...");
+
       const startTime = Date.now();
-      const response = await axios.get(`https://ga1-8j62.onrender.com/generate?prompt=${encodeURIComponent(prompt)}`, {
-        timeout: 30000
+      const response = await axios.get(`${apiUrl}/generate?prompt=${encodeURIComponent(prompt)}`, {
+        timeout: 30000,
+        validateStatus: () => true // Accept all HTTP statuses
       });
       const endTime = Date.now();
       const generationTime = endTime - startTime;
 
+      if (response.status === 503) {
+        return message.reply("⚠️ | The AI server is currently busy (503 Service Unavailable). Please try again later.");
+      }
+
       if (!response.data || !response.data.success || !response.data.image_url) {
-        throw new Error("Invalid API response format");
+        return message.reply("❌ | Invalid response from the AI server. Try again with a different prompt.");
       }
 
       const imageUrl = response.data.image_url;
