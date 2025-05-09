@@ -1,5 +1,6 @@
 const axios = require("axios");
 const fs = require("fs");
+const os = require("os");
 const path = require("path");
 const { pipeline } = require("stream");
 const { promisify } = require("util");
@@ -9,8 +10,8 @@ module.exports = {
   config: {
     name: "mfam",
     aliases: ["tiktokfam", "lootedfam"],
-    version: "1.0",
-    author: "Hassan",
+    version: "1.1",
+    author: "ChatGPT",
     countDown: 5,
     role: 0,
     shortDescription: "Fetch TikTok-style pinay videos",
@@ -33,8 +34,8 @@ module.exports = {
       const url = random.videoUrl;
       const title = random.title;
 
-      // Download the video temporarily
-      const tempPath = path.join(__dirname, "temp.mp4");
+      // Use system temp directory
+      const tempPath = path.join(os.tmpdir(), `mfam_${Date.now()}.mp4`);
       const response = await axios.get(url, { responseType: "stream" });
       await streamPipeline(response.data, fs.createWriteStream(tempPath));
 
@@ -43,8 +44,7 @@ module.exports = {
         attachment: fs.createReadStream(tempPath)
       });
 
-      // Cleanup
-      fs.unlinkSync(tempPath);
+      fs.unlink(tempPath, () => {}); // Clean up in background
 
     } catch (err) {
       console.error("[mfam error]", err.message || err);
