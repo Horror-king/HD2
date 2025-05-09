@@ -1,17 +1,9 @@
 const axios = require("axios");
-const https = require("https");
-const { PassThrough } = require("stream");
-
-// Custom function to stream video from URL
-async function getStreamFromURL(url) {
-  return new Promise((resolve, reject) => {
-    https.get(url, (response) => {
-      const data = new PassThrough();
-      response.pipe(data);
-      resolve(data);
-    }).on("error", reject);
-  });
-}
+const fs = require("fs");
+const path = require("path");
+const { pipeline } = require("stream");
+const { promisify } = require("util");
+const streamPipeline = promisify(pipeline);
 
 module.exports = {
   config: {
@@ -33,19 +25,26 @@ module.exports = {
     try {
       const page = Math.floor(Math.random() * 5) + 1;
       const res = await axios.get(`https://betadash-api-swordslush-production.up.railway.app/lootedpinay?page=${page}`);
-
       const result = res.data.result;
+
       if (!result || result.length === 0) return message.reply("❌ | No videos found.");
 
-      // Pick one random video
       const random = result[Math.floor(Math.random() * result.length)];
+      const url = random.videoUrl;
+      const title = random.title;
 
-      const videoStream = await getStreamFromURL(random.videoUrl);
+      // Download the video temporarily
+      const tempPath = path.join(__dirname, "temp.mp4");
+      const response = await axios.get(url, { responseType: "stream" });
+      await streamPipeline(response.data, fs.createWriteStream(tempPath));
 
       await message.reply({
-        body: `🔥 ${random.title}`,
-        attachment: videoStream
+        body: `🔥 ${title}`,
+        attachment: fs.createReadStream(tempPath)
       });
+
+      // Cleanup
+      fs.unlinkSync(tempPath);
 
     } catch (err) {
       console.error("[mfam error]", err.message || err);
