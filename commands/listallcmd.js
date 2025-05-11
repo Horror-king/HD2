@@ -1,64 +1,47 @@
 module.exports = {
   config: {
     name: "listallcmd",
-    version: "2.0",
+    version: "3.0",
     author: "kshitiz & fixed by AI",
-    countDown: 5,
     role: 0,
-    shortDescription: {
-      en: "List all available commands"
-    },
-    longDescription: {
-      en: "View all commands with categories (supports pagination)"
-    },
-    category: "Admin 🛠",
-    guide: {
-      en: "{pn} [page]"
-    },
-    priority: 1
+    shortDescription: "List all commands",
+    longDescription: "Show all available bot commands",
+    category: "Admin",
+    guide: "{pn}"
   },
 
-  onStart: async function ({ message, args, commands }) {
+  onStart: async function ({ message, commands }) {
     try {
-      // Get all commands and group them by category
-      const cmdList = {};
-      for (const [cmdName, cmdData] of commands) {
-        const category = cmdData.config?.category || "Uncategorized";
-        if (!cmdList[category]) {
-          cmdList[category] = [];
-        }
-        cmdList[category].push(`• ${cmdName}`);
+      // Debug: Check if 'commands' is loaded
+      if (!commands || typeof commands !== 'object') {
+        return message.reply("❌ | Commands data is not loaded correctly.");
       }
 
-      // Prepare pagination
-      const page = args[0] ? parseInt(args[0]) : 1;
-      const categories = Object.keys(cmdList);
-      const itemsPerPage = 5; // Categories per page
-      const totalPages = Math.ceil(categories.length / itemsPerPage);
+      // Convert commands Map/object into an array
+      const allCommands = Array.from(commands.keys());
       
-      if (page < 1 || page > totalPages) {
-        return message.reply(`❌ Invalid page number. Please choose between 1-${totalPages}.`);
+      if (allCommands.length === 0) {
+        return message.reply("⚠️ | No commands found!");
       }
 
-      // Get categories for current page
-      const startIdx = (page - 1) * itemsPerPage;
-      const paginatedCategories = categories.slice(startIdx, startIdx + itemsPerPage);
-
-      // Build the message
-      let replyMsg = `📜 Command List (Page ${page}/${totalPages})\n\n`;
-      
-      for (const category of paginatedCategories) {
-        replyMsg += `【 ${category} 】\n`;
-        replyMsg += `${cmdList[category].join("\n")}\n\n`;
+      // Split into chunks to avoid long messages
+      const chunkSize = 30;
+      const chunks = [];
+      for (let i = 0; i < allCommands.length; i += chunkSize) {
+        chunks.push(allCommands.slice(i, i + chunkSize));
       }
 
-      replyMsg += `🔹 Total Commands: ${commands.size}\n`;
-      replyMsg += `🔹 Type "${this.config.name} <page>" to view more`;
-
-      await message.reply(replyMsg);
+      // Send each chunk
+      for (const chunk of chunks) {
+        await message.reply(
+          `📜 **Available Commands (${chunk.length}/${allCommands.length})**\n\n` +
+          chunk.map(cmd => `• ${cmd}`).join("\n") +
+          `\n\n🔹 Use a command with prefix (e.g., -help)`
+        );
+      }
     } catch (err) {
-      console.error("[LISTALLCMD ERROR]", err);
-      message.reply("❌ Failed to load commands. Please try again later.");
+      console.error("🔴 [LISTALLCMD ERROR]:", err);
+      message.reply("❌ | Bot failed to fetch commands. Please check console/logs.");
     }
   }
 };
