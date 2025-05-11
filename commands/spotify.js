@@ -34,20 +34,8 @@ module.exports = {
       const seconds = Math.floor((durationMs % 60000) / 1000).toString().padStart(2, "0");
       const durationFormatted = `${minutes}:${seconds}`;
 
-      // Function to convert URLs to clickable links
-      const makeLinksClickable = (text) => {
-        return text.replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" style="color: #1DB954; text-decoration: underline;">$1</a>');
-      };
-
-      const replyMessage = `🎵 <b>${data.title}</b>\nArtist: ${data.artists || "Unknown"}\nDuration: ${durationFormatted}\n\n${makeLinksClickable(data.thumbnail)}\n${makeLinksClickable(data.download_url)}`;
-      
-      return message.reply(replyMessage, {
-        attachment: await global.utils.getStreamFromURL(data.thumbnail),
-        mentions: [{
-          tag: data.title,
-          id: message.senderID
-        }]
-      });
+      const replyMessage = `🎵 **${data.title}**\nArtist: ${data.artists || "Unknown"}\nDuration: ${durationFormatted}\n\n${data.thumbnail}\n${data.download_url}`;
+      return message.reply(replyMessage);
     } catch (error) {
       console.error("[Spotify Error]", error.message || error);
       return message.reply("❌ | Failed to fetch Spotify data. Try again later.");
