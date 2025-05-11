@@ -1,48 +1,64 @@
 module.exports = {
   config: {
     name: "listallcmd",
-    version: "1.0",
-    author: "kshitiz",
+    version: "2.0",
+    author: "kshitiz & fixed by AI",
     countDown: 5,
     role: 0,
     shortDescription: {
       en: "List all available commands"
     },
     longDescription: {
-      en: "View a comprehensive list of all available commands"
+      en: "View all commands with categories (supports pagination)"
     },
     category: "Admin 🛠",
     guide: {
-      en: "{pn}"
+      en: "{pn} [page]"
     },
     priority: 1
   },
 
-  onStart: async function ({ message, commands }) {
+  onStart: async function ({ message, args, commands }) {
     try {
-      const allCommands = Array.from(commands.keys());
+      // Get all commands and group them by category
+      const cmdList = {};
+      for (const [cmdName, cmdData] of commands) {
+        const category = cmdData.config?.category || "Uncategorized";
+        if (!cmdList[category]) {
+          cmdList[category] = [];
+        }
+        cmdList[category].push(`• ${cmdName}`);
+      }
+
+      // Prepare pagination
+      const page = args[0] ? parseInt(args[0]) : 1;
+      const categories = Object.keys(cmdList);
+      const itemsPerPage = 5; // Categories per page
+      const totalPages = Math.ceil(categories.length / itemsPerPage);
       
-      if (!allCommands.length) {
-        return message.reply("❌ | No commands loaded.");
+      if (page < 1 || page > totalPages) {
+        return message.reply(`❌ Invalid page number. Please choose between 1-${totalPages}.`);
       }
 
-      // Split the command list into chunks to avoid hitting message length limits
-      const chunkSize = 50;
-      const commandChunks = [];
+      // Get categories for current page
+      const startIdx = (page - 1) * itemsPerPage;
+      const paginatedCategories = categories.slice(startIdx, startIdx + itemsPerPage);
+
+      // Build the message
+      let replyMsg = `📜 Command List (Page ${page}/${totalPages})\n\n`;
       
-      for (let i = 0; i < allCommands.length; i += chunkSize) {
-        commandChunks.push(allCommands.slice(i, i + chunkSize));
+      for (const category of paginatedCategories) {
+        replyMsg += `【 ${category} 】\n`;
+        replyMsg += `${cmdList[category].join("\n")}\n\n`;
       }
 
-      for (const chunk of commandChunks) {
-        const commandList = chunk.map(cmd => `• -${cmd}`).join("\n");
-        await message.reply(`📜 Available commands (${chunk.length}/${allCommands.length}):\n\n${commandList}`);
-      }
+      replyMsg += `🔹 Total Commands: ${commands.size}\n`;
+      replyMsg += `🔹 Type "${this.config.name} <page>" to view more`;
 
-      await message.reply(`✅ Total commands: ${allCommands.length}`);
-    } catch (error) {
-      console.error(error);
-      message.reply("❌ | An error occurred while fetching commands.");
+      await message.reply(replyMsg);
+    } catch (err) {
+      console.error("[LISTALLCMD ERROR]", err);
+      message.reply("❌ Failed to load commands. Please try again later.");
     }
   }
 };
