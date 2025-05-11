@@ -1575,41 +1575,42 @@ function closeZoom() {
             document.querySelector('.chat-input').style.display = 'flex';
         }
 // ===== ADD THIS AT THE VERY END OF YOUR SCRIPT ===== //
-// (After all your existing code, before closing tag)
+// Improved version that works with your message structure
 
 // Helper function to detect if text contains media URLs
 function isMediaUrl(text) {
     const mediaPatterns = [
-        /(https?:\/\/[^\s]+\.(?:png|jpe?g|gif|webp))/i,
-        /(https?:\/\/[^\s]+\.(?:mp3|ogg|wav|m4a))/i,
-        /(https?:\/\/[^\s]+\.(?:mp4|webm|ogg))/i
+        /\.(png|jpe?g|gif|webp)(?:\?|$)/i,
+        /\.(mp3|ogg|wav|m4a)(?:\?|$)/i,
+        /\.(mp4|webm|ogg)(?:\?|$)/i
     ];
     return mediaPatterns.some(pattern => pattern.test(text));
 }
 
-// Function to highlight regular URLs (non-media)
-function highlightRegularUrls(text) {
-    return text.replace(/(https?:\/\/[^\s]+)/gi, url => 
+// Function to safely highlight URLs
+function highlightUrlsSafely(element) {
+    if (!element || isMediaUrl(element.textContent)) return;
+    
+    const urlRegex = /(https?:\/\/[^\s]+)/gi;
+    element.innerHTML = element.textContent.replace(urlRegex, url => 
         isMediaUrl(url) ? url : `<a href="${url}" target="_blank" style="color: #0066cc; text-decoration: underline;">${url}</a>`
     );
 }
 
-// Modify the displayMessage function without changing original code
+// Patch the displayMessage function
 const originalDisplayMessage = displayMessage;
 displayMessage = function(text, sender, repliedTo = null) {
-    const result = originalDisplayMessage.call(this, text, sender, repliedTo);
+    const messageElement = originalDisplayMessage.call(this, text, sender, repliedTo);
     
-    // Only process non-media messages
-    if (!isMediaUrl(text)) {
-        const contentDivs = result.querySelectorAll('.content div');
-        contentDivs.forEach(div => {
-            if (!div.querySelector('img, audio, video')) {
-                div.innerHTML = highlightRegularUrls(div.textContent);
-            }
-        });
-    }
+    // Process all text content in the message
+    const contentElements = messageElement.querySelectorAll('.content, .content div');
+    contentElements.forEach(element => {
+        if (!element.querySelector('img, audio, video, a')) {
+            highlightUrlsSafely(element);
+        }
+    });
     
-    return result;
+    return messageElement;
 };
 // ===== END OF ADDED CODE ===== //
     </script>
