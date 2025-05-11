@@ -1574,44 +1574,39 @@ function closeZoom() {
             showContainer('chat');
             document.querySelector('.chat-input').style.display = 'flex';
         }
-// ===== ADD THIS AT THE VERY END OF YOUR SCRIPT ===== //
-// Ultimate link highlighter that works with formatted messages
+// Improved URL detection pattern that handles more cases
+const URL_PATTERN = /https?:\/\/[^\s<>]+(?:\b|$)/g;
 
-// Improved URL detection that works with punctuation
-function isUrl(text) {
-    return /https?:\/\/[^\s]+/.test(text);
-}
-
-// Smart URL extractor that handles punctuation
-function extractUrl(text) {
-    const match = text.match(/https?:\/\/[^\s]+/);
-    return match ? match[0] : null;
-}
-
-// Main highlighting function
+// Updated highlight function that processes all URLs
 function highlightLinksInElement(element) {
     if (!element || element.querySelector('img, audio, video, a')) return;
     
     const text = element.textContent;
-    if (!isUrl(text)) return;
+    if (!text) return;
     
-    const url = extractUrl(text);
-    if (!url) return;
+    // Replace all URLs with anchor tags
+    const html = text.replace(URL_PATTERN, url => {
+        // Clean URL by removing trailing punctuation
+        const cleanUrl = url.replace(/[.,;!?]+$/, '');
+        return `<a href="${cleanUrl}" target="_blank" style="color: #0066cc; text-decoration: underline;">${cleanUrl}</a>`;
+    });
     
-    // Preserve all original text, just highlight the URL part
-    element.innerHTML = text.replace(url, 
-        `<a href="${url}" target="_blank" style="color: #0066cc; text-decoration: underline;">${url}</a>`
-    );
+    // Only update if we found URLs
+    if (html !== text) {
+        element.innerHTML = html;
+    }
 }
 
-// Patch the displayMessage function
+// Update the displayMessage function to ensure it processes all text nodes
 const originalDisplayMessage = displayMessage;
 displayMessage = function(text, sender, repliedTo = null) {
     const messageElement = originalDisplayMessage.call(this, text, sender, repliedTo);
+    const contentDiv = messageElement.querySelector('.content');
     
-    // Process all text nodes in the message
+    // Process all text nodes in the content div
+    const textNodes = [];
     const walker = document.createTreeWalker(
-        messageElement.querySelector('.content'),
+        contentDiv,
         NodeFilter.SHOW_TEXT,
         null,
         false
@@ -1619,16 +1614,19 @@ displayMessage = function(text, sender, repliedTo = null) {
     
     let node;
     while (node = walker.nextNode()) {
-        if (isUrl(node.nodeValue)) {
+        textNodes.push(node);
+    }
+    
+    textNodes.forEach(node => {
+        if (URL_PATTERN.test(node.nodeValue)) {
             const span = document.createElement('span');
             span.textContent = node.nodeValue;
             highlightLinksInElement(span);
             node.parentNode.replaceChild(span, node);
         }
-    }
+    });
     
     return messageElement;
 };
-// ===== END OF ADDED CODE ===== //
     </script>
 </html>
