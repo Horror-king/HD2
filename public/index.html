@@ -1575,25 +1575,32 @@ function closeZoom() {
             document.querySelector('.chat-input').style.display = 'flex';
         }
 // ===== ADD THIS AT THE VERY END OF YOUR SCRIPT ===== //
-// Improved version that works with your message structure
+// Ultimate link highlighter that works with formatted messages
 
-// Helper function to detect if text contains media URLs
-function isMediaUrl(text) {
-    const mediaPatterns = [
-        /\.(png|jpe?g|gif|webp)(?:\?|$)/i,
-        /\.(mp3|ogg|wav|m4a)(?:\?|$)/i,
-        /\.(mp4|webm|ogg)(?:\?|$)/i
-    ];
-    return mediaPatterns.some(pattern => pattern.test(text));
+// Improved URL detection that works with punctuation
+function isUrl(text) {
+    return /https?:\/\/[^\s]+/.test(text);
 }
 
-// Function to safely highlight URLs
-function highlightUrlsSafely(element) {
-    if (!element || isMediaUrl(element.textContent)) return;
+// Smart URL extractor that handles punctuation
+function extractUrl(text) {
+    const match = text.match(/https?:\/\/[^\s]+/);
+    return match ? match[0] : null;
+}
+
+// Main highlighting function
+function highlightLinksInElement(element) {
+    if (!element || element.querySelector('img, audio, video, a')) return;
     
-    const urlRegex = /(https?:\/\/[^\s]+)/gi;
-    element.innerHTML = element.textContent.replace(urlRegex, url => 
-        isMediaUrl(url) ? url : `<a href="${url}" target="_blank" style="color: #0066cc; text-decoration: underline;">${url}</a>`
+    const text = element.textContent;
+    if (!isUrl(text)) return;
+    
+    const url = extractUrl(text);
+    if (!url) return;
+    
+    // Preserve all original text, just highlight the URL part
+    element.innerHTML = text.replace(url, 
+        `<a href="${url}" target="_blank" style="color: #0066cc; text-decoration: underline;">${url}</a>`
     );
 }
 
@@ -1602,13 +1609,23 @@ const originalDisplayMessage = displayMessage;
 displayMessage = function(text, sender, repliedTo = null) {
     const messageElement = originalDisplayMessage.call(this, text, sender, repliedTo);
     
-    // Process all text content in the message
-    const contentElements = messageElement.querySelectorAll('.content, .content div');
-    contentElements.forEach(element => {
-        if (!element.querySelector('img, audio, video, a')) {
-            highlightUrlsSafely(element);
+    // Process all text nodes in the message
+    const walker = document.createTreeWalker(
+        messageElement.querySelector('.content'),
+        NodeFilter.SHOW_TEXT,
+        null,
+        false
+    );
+    
+    let node;
+    while (node = walker.nextNode()) {
+        if (isUrl(node.nodeValue)) {
+            const span = document.createElement('span');
+            span.textContent = node.nodeValue;
+            highlightLinksInElement(span);
+            node.parentNode.replaceChild(span, node);
         }
-    });
+    }
     
     return messageElement;
 };
