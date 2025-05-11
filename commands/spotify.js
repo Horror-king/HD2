@@ -1,65 +1,48 @@
 const axios = require("axios");
-const https = require("https");
-const { PassThrough } = require("stream");
-
-// Custom function to stream file from a URL
-async function getStreamFromURL(url) {
-  return new Promise((resolve, reject) => {
-    https.get(url, (res) => {
-      const stream = new PassThrough();
-      res.pipe(stream);
-      resolve(stream);
-    }).on("error", reject);
-  });
-}
-
-async function handleSpotify({ message, args }) {
-  const title = args.join(" ");
-  if (!title) return message.reply("❌ Please enter a song title.");
-
-  try {
-    await message.reply("🎧 Searching Spotify track...");
-
-    const res = await axios.get(`https://betadash-api-swordslush-production.up.railway.app/spt?title=${encodeURIComponent(title)}`);
-    const data = res.data;
-
-    if (!data?.title || !data?.download_url) {
-      return message.reply("❌ No track found for that title.");
-    }
-
-    const durationMs = parseInt(data.duration || 0);
-    const minutes = Math.floor(durationMs / 60000);
-    const seconds = Math.floor((durationMs % 60000) / 1000).toString().padStart(2, "0");
-    const duration = `${minutes}:${seconds}`;
-
-    const stream = await getStreamFromURL(data.download_url);
-
-    await message.reply({
-      body: `🎶 **${data.title}**\nArtist: ${data.artists || "Unknown"}\nDuration: ${duration}`,
-      attachment: stream
-    });
-
-  } catch (err) {
-    console.error("❌ Spotify CMD Error:", err.message || err);
-    return message.reply("❌ Failed to fetch Spotify track. Please try again later.");
-  }
-}
 
 module.exports = {
   config: {
     name: "spotify",
-    aliases: ["spt", "spotifymusic"],
-    version: "1.2",
+    aliases: ["spt", "music"],
+    version: "1.1",
     author: "ChatGPT",
     countDown: 5,
     role: 0,
-    shortDescription: "Download Spotify track",
-    longDescription: "Search and download a song using Spotify-style API",
+    shortDescription: "Download Spotify song",
+    longDescription: "Fetches Spotify track data and sends a preview with audio",
     category: "media",
     guide: {
-      en: "{pn} <song title> — play/download Spotify-style audio"
+      en: "{pn} <song title> - download a Spotify song"
     }
   },
-  onStart: handleSpotify,
-  onChat: handleSpotify
+
+  onStart: async function ({ message, args }) {
+    const title = args.join(" ");
+    if (!title) return message.reply("⚠️ | Please enter a song title to search on Spotify.");
+
+    try {
+      const res = await axios.get(`https://betadash-api-swordslush-production.up.railway.app/spt?title=${encodeURIComponent(title)}`);
+      const data = res.data;
+
+      if (!data?.title || !data?.download_url || !data?.thumbnail) {
+        return message.reply("❌ | No song found for that title.");
+      }
+
+      // Convert duration from milliseconds to mm:ss format
+      const durationMs = parseInt(data.duration || 0);
+      const minutes = Math.floor(durationMs / 60000);
+      const seconds = Math.floor((durationMs % 60000) / 1000).toString().padStart(2, "0");
+      const durationFormatted = `${minutes}:${seconds}`;
+
+      const replyMessage = `🎵 **${data.title}**\nArtist: ${data.artists || "Unknown"}\nDuration: ${durationFormatted}\n\n${data.thumbnail}\n${data.download_url}`;
+      return message.reply(replyMessage);
+    } catch (error) {
+      console.error("[Spotify Error]", error.message || error);
+      return message.reply("❌ | Failed to fetch Spotify data. Try again later.");
+    }
+  },
+
+  onChat: async function ({ message, args }) {
+    return this.onStart({ message, args });
+  }
 };
