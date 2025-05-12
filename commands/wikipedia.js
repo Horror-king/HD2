@@ -4,8 +4,8 @@ module.exports = {
   config: {
     name: "wikipedia",
     aliases: ["wiki", "wikisearch"],
-    version: "1.0",
-    author: "Hassan",
+    version: "1.1",
+    author: "ChatGPT",
     countDown: 5,
     role: 0,
     shortDescription: "Search Wikipedia for a topic",
@@ -23,32 +23,34 @@ module.exports = {
     const apiUrl = `https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(query)}`;
 
     try {
-      const res = await axios.get(apiUrl);
+      const res = await axios.get(apiUrl, {
+        headers: {
+          "User-Agent": "WikiBot/1.0 (https://yau-5-ai-0-5.onrender.com/)"
+        }
+      });
+
       const data = res.data;
 
-      if (data.type === "https://mediawiki.org/wiki/HyperSwitch/errors/not_found") {
+      if (data.title === "Not found") {
         return message.reply("❌ | No article found for that topic.");
       }
 
-      const title = data.title || query;
-      const extract = data.extract || "No summary available.";
+      const title = data.title;
+      const summary = data.extract || "No summary available.";
       const pageUrl = data.content_urls?.desktop?.page || `https://en.wikipedia.org/wiki/${encodeURIComponent(query)}`;
+      const image = data.thumbnail?.source;
 
-      let replyMessage = `📚 **${title}**\n\n${extract}\n\n🔗 More: ${pageUrl}`;
+      const replyText = `📚 **${title}**\n\n${summary}\n\n🔗 Read more: ${pageUrl}`;
 
-      // If an image exists, send it with the summary
-      if (data.thumbnail?.source) {
-        await message.reply({
-          body: replyMessage,
-          attachment: [data.thumbnail.source]
-        });
+      if (image) {
+        await message.reply({ body: replyText, attachment: [image] });
       } else {
-        await message.reply(replyMessage);
+        await message.reply(replyText);
       }
 
     } catch (err) {
       console.error("[Wikipedia Error]", err.message || err);
-      return message.reply("❌ | Could not fetch Wikipedia article. Please try again later.");
+      return message.reply("❌ | Failed to fetch response. Please try again.");
     }
   },
 
