@@ -1,26 +1,11 @@
 const axios = require("axios");
 
-// Add this utility function at the top of your file
-async function getStreamFromURL(url) {
-  try {
-    const response = await axios({
-      method: 'get',
-      url: url,
-      responseType: 'stream'
-    });
-    return response.data;
-  } catch (error) {
-    console.error('Error fetching image:', error);
-    throw error;
-  }
-}
-
 module.exports = {
   config: {
     name: "wikipedia",
     aliases: ["wiki", "wikisearch"],
-    version: "1.4",
-    author: "Hassan",
+    version: "1.5",
+    author: "ChatGPT",
     countDown: 5,
     role: 0,
     shortDescription: "Search Wikipedia for a topic",
@@ -45,7 +30,7 @@ module.exports = {
 
       const res = await axios.get(apiUrl, {
         headers: {
-          "User-Agent": "WikiBot/1.0",
+          "User-Agent": "WikiBot/1.0 (https://yau-5-ai-0-5.onrender.com/)",
           "Accept": "application/json"
         },
         timeout: 10000
@@ -54,44 +39,39 @@ module.exports = {
       const data = res.data;
 
       if (data.type === "disambiguation") {
-        return message.reply(`❌ | Multiple topics found.\nPlease be more specific.\n🔗 See options: ${data.content_urls.desktop.page}`);
+        return message.reply(`❌ | This term refers to multiple topics.\nPlease be more specific.\n\n🔗 See options: ${data.content_urls.desktop.page}`);
       }
 
-      if (!data.title || data.title === "Not found") {
-        return message.reply(`❌ | No article found for "${query}".`);
+      if (data.title === "Not found" || data.type === "https://mediawiki.org/wiki/HyperSwitch/errors/not_found") {
+        return message.reply(`❌ | No article found for "${query}".\n\nTry these suggestions:\n1. Check your spelling\n2. Use more specific terms\n3. Try similar terms`);
       }
 
       const title = data.title;
-      const summary = data.extract || "No summary available.";
-      const pageUrl = data.content_urls?.desktop?.page;
+      const summary = data.extract || "No summary available for this article.";
+      const pageUrl = data.content_urls?.desktop?.page || `https://en.wikipedia.org/wiki/${encodeURIComponent(query)}`;
       const imageUrl = data.thumbnail?.source;
 
-      const replyText = `📚 **${title}**\n\n${summary}${pageUrl ? `\n\n🔗 Read more: ${pageUrl}` : ''}`;
-
+      // Format the response for HTML display
+      let replyText = `📚 Wikipedia: ${title}\n\n${summary}\n\n🔗 Read more: ${pageUrl}`;
+      
       if (imageUrl) {
-        try {
-          const imageStream = await getStreamFromURL(imageUrl);
-          await message.reply({
-            body: replyText,
-            attachment: imageStream
-          });
-        } catch (imageError) {
-          console.error("Image Error:", imageError);
-          await message.reply(replyText);
-        }
-      } else {
-        await message.reply(replyText);
+        // Add image URL in a way your HTML can parse
+        replyText += `\n\n🖼️ ${imageUrl}`;
       }
 
+      await message.reply(replyText);
+
     } catch (err) {
-      console.error("[Wikipedia Error]", err);
+      console.error("[Wikipedia Command Error]", err);
       
       if (err.code === 'ECONNABORTED') {
-        await message.reply("⏳ | Wikipedia is slow to respond. Try again later.");
+        await message.reply("⏳ | Wikipedia is taking too long to respond. Please try again later.");
       } else if (err.response?.status === 404) {
-        await message.reply("🔍 | No Wikipedia article found.");
+        await message.reply("🔍 | No Wikipedia article found for that topic. Try a different search term.");
+      } else if (err.response?.status === 429) {
+        await message.reply("🔄 | Wikipedia is rate limiting us. Please wait a minute and try again.");
       } else {
-        await message.reply("❌ | Error fetching Wikipedia results.");
+        await message.reply("❌ | Failed to fetch from Wikipedia. Please try again with a different search term.");
       }
     }
   },
