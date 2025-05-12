@@ -5,7 +5,7 @@ module.exports = {
     name: "wikipedia",
     aliases: ["wiki", "wikisearch"],
     version: "1.5",
-    author: "ChatGPT",
+    author: "Hassan",
     countDown: 5,
     role: 0,
     shortDescription: "Search Wikipedia for a topic",
