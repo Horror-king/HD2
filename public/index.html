@@ -1,13 +1,9 @@
-<DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>MessageMate</title>
-    <meta property="og:image" content="https://i.ibb.co/p6LrrNRK/1746227326721.jpg" />
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="MessageMate" />
-    <meta name="twitter:description" content="Chat smarter with MessageMate – Hassan powered messaging companion." />
+    <title>AI Chatbot</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
@@ -188,98 +184,101 @@
         .active {
             display: block;
         }
+
+        .chat-container {
+            flex: 1;
+            max-width: 600px;
+            margin: 50px auto 0;
+            width: 100%;
+            height: calc(100vh - 50px);
+            background-color: white;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+
         
-html, body {
-    /* Remove these restrictive properties */
-    /* overscroll-behavior: none; */
-    /* -webkit-overflow-scrolling: auto; */
-    /* touch-action: none; */
-    overflow: auto; /* Allow scrolling */
-    height: 100%;
-            }
-
-.chat-container {
-    flex: 1;
-    max-width: 600px;
-    margin: 50px auto 0;
-    width: 100%;
-    height: calc(100vh - 50px);
-    background-color: white;
-    display: flex;
-    flex-direction: column;
-    position: relative;
-    overflow: hidden;
-    z-index: 1;
-}
-#private-ai {
-    flex: 1;
-    max-width: 600px;
-    margin: 50px auto 0;
-    width: 100%;
-    height: calc(100vh - 50px);
-    background-color: white;
-    display: flex;
-    flex-direction: column;
-    position: relative;
-    overflow: hidden;
-}
-.chat-container, #private-ai {
-    flex: 1;
-    max-width: 600px;
-    margin: 50px auto 0;
-    width: 100%;
-    height: calc(100vh - 50px);
-    background-color: white;
-    display: flex;
-    flex-direction: column;
-    position: relative;
-    overflow: hidden;
-}
-
-.chat-messages, #private-ai-container {
-    flex: 1;
-    padding: 15px;
-    overflow-y: auto;
-    margin-bottom: 50px;
-}
 .chat-messages {
-    flex: 1;
-    height: calc(100% - 60px); /* Adjust based on input height */
-    padding: 15px;
-    overflow-y: auto;
-    display: flex;
-    margin-bottom: 50px;
-    flex-direction: column;
-    scroll-behavior: smooth;
-    background-color: white;
-    position: relative;
-    margin-top: 0;
-    font-size: 16px;
-    -webkit-overflow-scrolling: touch;
-    overscroll-behavior: contain;
-    touch-action: auto;
+            flex: 1;
+            padding: 15px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            scroll-behavior: smooth;
+            background-color: white;
+            margin-bottom: 62px;
+            position: relative;
+            margin-top: 4;
+           font-size: 16px; /* Optional: decrease font size */
 }
 
-.message {
-    padding: 10px;
-    border-radius: 20px;
-    margin-bottom: 8px;
-    max-width: 83%;
-    word-wrap: break-word;
-    white-space: pre-wrap;
-    position: relative;
-    display: flex;
-    align-items: flex-start;
-    gap: 8px;
-    touch-action: none;
-    -webkit-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-    touch-action: manipulation;
-}
-     
-.content {
-    user-select: none;
+
+        .message {
+            padding: 10px;
+            border-radius: 20px;
+            margin-bottom: 8px;
+            max-width: 83%;
+            word-wrap: break-word;
+            white-space: pre-wrap;
+            position: relative;
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+            touch-action: none;
+        }
+    .message {
+        -webkit-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+        touch-action: manipulation;
+    }
+
+    .content {
+        user-select: none;
+    }
+
+    .message {
+        -webkit-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+        touch-action: manipulation;
+        margin-bottom: 10px;
+    }
+
+    .content {
+        user-select: none;
+    }
+
+    .reply-preview {
+        font-size: 0.85em;
+        color: #555;
+        background-color: #eee;
+        padding: 6px 10px;
+        border-left: 3px solid #888;
+        margin-bottom: 6px;
+        border-radius: 6px;
+        max-width: 90%;
+        white-space: pre-wrap;
+    }
+
+
+        .message .avatar {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            flex-shrink: 0;
+            background-size: cover;
+            background-position: center;
+            margin-top: 2px;
+        }
+
+        .message.sent .avatar {
+            display: none;
+        }
+
+        .message .content {
     flex-grow: 1;
     padding: 10px;
     border-radius: 15px;
@@ -292,77 +291,6 @@ html, body {
 .message.sent .content {
     background-color: #dcf8c6;
 }
-
-.reply-preview {
-    font-size: 0.85em;
-    color: #555;
-    background-color: #eee;
-    padding: 6px 10px;
-    border-left: 3px solid #888;
-    margin-bottom: 6px;
-    border-radius: 6px;
-    max-width: 90%;
-    white-space: pre-wrap;
-}
-
-/* Avatar base style */
-.message .avatar {
-    width: 28px;
-    height: 28px;
-    border-radius: 50%;
-    flex-shrink: 0;
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    align-self: flex-start;
-    margin-top: 10px;
-}
-
-/* Sent messages should also show avatars now */
-.message.sent .avatar {
-    display: block;
-    order: 2; /* Move avatar to the end */
-    margin-top: 10px; /* Your specific adjustment for right-side avatars */
-}
-
-
-
-.message .avatar img {
-    width: 100%;
-    height: 100%;
-    border-radius: 50%;
-    display: block;
-}
-
-/* Username styling */
-.message .username {
-    font-size: 0.72rem;
-    font-weight: bold;
-    color: #777;
-    margin-bottom: 4px;
-    line-height: 1;
-}
-
-/* Received messages (left aligned) */
-.message.received {
-    align-self: flex-start;
-    margin-left: -15px;
-    flex-direction: row;
-}
-
-/* Sent messages (right aligned) */
-.message.sent {
-    align-self: flex-end;
-    margin-right: -15px;
-    flex-direction: row;
-    justify-content: flex-end;
-}
-
-/* Content ordering for sent messages */
-.message.sent .content {
-    order: 1;
-}
-
 
 .message img {
     width: 100%;
@@ -379,6 +307,31 @@ html, body {
     box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
 }
 
+.message video.chat-video {
+    width: 100%;
+    margin: 6px 0 0 0;
+    display: block;
+    border-radius: 12px;
+    object-fit: cover;
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.message video.chat-video:hover {
+    transform: scale(1.02);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
+}
+        .message.received {
+            flex-direction: row;
+            align-self: flex-start;
+            margin-left: -15px;
+        }
+
+        .message.sent {
+            flex-direction: row-reverse;
+            align-self: flex-end;
+            margin-right: -15px;
+        }
 
         .message.sent .content {
             background-color: #DCF8C6;
@@ -388,6 +341,12 @@ html, body {
             background-color: #f0f0f0;
         }
 
+        .message.received .avatar {
+            background-image: url("https://i.ibb.co/DHMHy6GJ/9aae320629d1.jpg");
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
 
         .message-context-menu {
             position: absolute;
@@ -418,14 +377,7 @@ html, body {
         .message-context-menu button:hover {
             background-color: #f5f5f5;
         }
-       /* Hide avatar and username for sent messages */
-.message.sent .avatar {
-    display: none !important;
-}
 
-.message.sent .username {
-    display: none !important;
-}
         .copy-btn {
             position: absolute;
             bottom: -19px;
@@ -488,101 +440,72 @@ html, body {
         }
 
         .chat-input button {
-    background: none;
-    border: none;
-    cursor: pointer;
-    padding: 0 10px;
-}
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0 10px;
+        }
 
-.chat-input button i {
-    font-size: 24px;
-    color: #888; /* Default gray when disabled */
-    transition: color 0.3s;
-}
+        .chat-input button i {
+            font-size: 24px;
+            color: #4267B2;
+        }
 
-.chat-input button.enabled i {
-    color: #4267B2; /* Blue when enabled */
-}
+        .chat-input button:disabled i {
+            color: #888;
+        }
 
-.auth-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    background-color: #f0f2f5;
-    padding: 0 10px;
-}
+        .auth-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f0f2f5;
+        }
 
-.auth-box {
-    background-color: white;
-    padding: 41px 30px;
-    border-radius: 10px;
-    box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.15);
-    width: 100%;
-    max-width: 300px;
-    text-align: center;
-}
+        .auth-box {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            width: 300px;
+            text-align: center;
+        }
 
-.auth-box input {
-    width: 90%;
+        .auth-box input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
 
-    height: 57px;
-    padding: 0 20px;
-    margin-bottom: 20px;
-    border: 1px solid #DADAF2;
-    background: #F8F8FB;
-    border-radius: 5px;
-    outline: none;
-    font-size: 16px;
-    transition: 0.2s ease;
-}
+        .auth-box button {
+            width: 100%;
+            padding: 10px;
+            background-color: #4267B2;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
 
-.auth-box input:focus {
-    border-color: #626cd6;
-    background-color: #fff;
-}
+        .auth-box button:hover {
+            background-color: #365899;
+        }
 
-.auth-box button {
-    width: 100%;
-    height: 56px;
-    background-color: #4267B2;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 18px;
-    font-weight: 500;
-    text-transform: uppercase;
-    transition: 0.3s ease;
-    margin-top: 10px;
-}
+        .logout {
+            color: red;
+        }
 
-.auth-box button:hover {
-    background-color: #365899;
-}
+        .auth-toggle {
+            margin-top: 10px;
+        }
 
-.logout {
-    color: red;
-    font-weight: 600;
-    display: inline-block;
-    margin-top: 15px;
-}
-
-.auth-toggle {
-    margin-top: 15px;
-}
-
-.auth-toggle a {
-    color: #4267B2;
-    text-decoration: none;
-    font-weight: 500;
-    transition: 0.3s ease;
-}
-
-.auth-toggle a:hover {
-    text-decoration: underline;
-}
-
+        .auth-toggle a {
+            color: #4267B2;
+            text-decoration: none;
+        }
 
         .gotopbtn {
             position: fixed;
@@ -767,40 +690,7 @@ html, body {
         .news-toggle i {
             font-size: 20px;
         }
-          .profile-section {
-    display: flex;
-    align-items: center;
-    padding: 19px;
-    background-color: #444;
-    border-bottom: 1px none #555;
-}
-
-.profile-avatar {
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
-    overflow: hidden;
-    margin-right: 10px;
-}
-
-.profile-avatar img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-.profile-username {
-    color: white;
-    font-weight: 500;
-    font-size: 16px;
-}
-
-.menu-divider {
-    height: 1px;
-    background-color: #555;
-    margin: 5px 0;
-}
-  </style>
+    </style>
 </head>
 <body>
     <div class="loader" id="loader">
@@ -824,7 +714,7 @@ html, body {
 
     <div class="menu">
         <div class="hamburger" onclick="toggleDropdown()">☰</div>
-        <div class="title">MessageMate&#9662;</div>
+        <div class="title">AI Chatbot &#9662;</div>
         <div class="kebab-menu" onclick="toggleKebabMenu(event)">
             <div class="dots">
                 <div class="dot"></div>
@@ -840,30 +730,32 @@ html, body {
             </div>
         </div>
     </div>
- <div class="dropdown" id="dropdown" style="display: none;">
-    <div class="profile-section">
-        <div class="profile-avatar">
-            <img src="https://i.pravatar.cc/50?u=${encodeURIComponent(currentUsername)}" alt="Profile">
-        </div>
-        <div class="profile-username">${currentUsername}</div>
-    </div>
-    <div class="menu-divider"></div>
-    <a href="#" onclick="showContainer('chat')">Chat with AI</a>
-    <a href="#" onclick="showContainer('private-ai')">Private AI</a>
-    <a href="#" onclick="showContainer('about')">About</a>
-    <a href="#" onclick="showContainer('features')">Features</a>
-    <a href="#" onclick="showContainer('help')">Help</a>
-    <a href="#" onclick="logout()">Logout</a>
-</div>
 
-<button class="news-toggle" onclick="toggleNews()" title="Toggle News" style="display: none;">
-    <i class="fas fa-newspaper"></i>
-</button>
-  
-  <div id="chat" class="chat-container container" style="display: none;">
+    <div class="dropdown" id="dropdown">
+        <a href="#" onclick="showContainer('chat')">Chat with AI</a>
+        <a href="#" onclick="showContainer('about')">About</a>
+        <a href="#" onclick="showContainer('features')">Features</a>
+        <a href="#" onclick="showContainer('help')">Help</a>
+        <a href="#" onclick="logout()">Logout</a>
+    </div>
+
+    <button class="news-toggle" onclick="toggleNews()" title="Toggle News">
+        <i class="fas fa-newspaper"></i>
+    </button>
+
+    <div class="news-container" id="news-container">
+        <div class="news-header">Latest Updates</div>
+        <div class="news-items" id="news-items">
+        </div>
+    </div>
+
+    <div id="chat" class="chat-container container">
     <div class="chat-messages" id="chat-container"></div>
+
+    <!-- Add this for reply preview -->
     <div id="reply-preview-container"></div>
-    <div class="chat-input" style="display: none;">
+
+    <div class="chat-input">
         <textarea id="user-input" placeholder="Type your message..."></textarea>
         <button onclick="sendMessage()" disabled>
             <i class="fas fa-paper-plane"></i>
@@ -871,17 +763,7 @@ html, body {
     </div>
 </div>
 
-<div id="private-ai" class="chat-container container" style="display: none;">
-    <div class="chat-messages" id="private-ai-container"></div>
-    <div id="private-reply-preview-container"></div>
-    <div class="chat-input" style="display: none;">
-        <textarea id="private-user-input" placeholder="Type your private message..."></textarea>
-        <button onclick="sendPrivateMessage()" disabled>
-            <i class="fas fa-paper-plane"></i>
-        </button>
-    </div>
-</div>
-  <div id="zoom-overlay" style="
+ <div id="zoom-overlay" style="
     display: none;
     justify-content: center;
     align-items: center;
@@ -1010,412 +892,222 @@ html, body {
         </div>
     </div>
 
-    <script>  
-let isLogin = true;
-let users = JSON.parse(localStorage.getItem('users')) || {};
-let longPressTimer;
-let isLongPress = false;
-const badWords = ['fuck', 'nigga', 'shit', 'bitch', 'asshole'];
-const spamTracker = {};
-const SPAM_LIMIT = 5;
-const SPAM_WINDOW = 10000;
-const BAN_DURATION = 60000;
-const bannedUsers = {};
-const warnedUsers = {};
+    <script>
+        let isLogin = true;
+        let users = JSON.parse(localStorage.getItem('users')) || {};
+        let longPressTimer;
+        let isLongPress = false;
 
-// Notification variables
-let lastMessageId = null;
-let notificationPermissionGranted = false;
+        function toggleAuth() {
+            isLogin = !isLogin;
+            const authTitle = document.getElementById('auth-title');
+            const authButton = document.querySelector('.auth-box button');
+            const toggleText = document.getElementById('toggle-text');
+            const toggleLink = document.getElementById('toggle-link');
+            const errorMessage = document.getElementById('error-message');
+            const successMessage = document.getElementById('success-message');
 
-const elements = {
-  usernameInput: document.getElementById('auth-username'),
-  messageInput: document.getElementById('user-input'),
-  sendButton: document.querySelector('.chat-input button'),
-  chatContainer: document.getElementById('chat-container'),
-  replyPreview: document.getElementById('reply-preview-container'),
-  errorDisplay: document.getElementById('error-message'),
-  successDisplay: document.getElementById('success-message')
-};
+            errorMessage.style.display = 'none';
+            successMessage.style.display = 'none';
+
+            if (isLogin) {
+                authTitle.textContent = 'Login';
+                authButton.textContent = 'Login';
+                toggleText.textContent = "Don't have an account? ";
+                toggleLink.textContent = 'Sign Up';
+            } else {
+                authTitle.textContent = 'Sign Up';
+                authButton.textContent = 'Sign Up';
+                toggleText.textContent = 'Already have an account? ';
+                toggleLink.textContent = 'Login';
+            }
+        }
+
+        async function handleAuth() {
+            const username = document.getElementById('auth-username').value;
+            const password = document.getElementById('auth-password').value;
+            const loader = document.getElementById('loader');
+            const errorMessage = document.getElementById('error-message');
+            const successMessage = document.getElementById('success-message');
+
+            errorMessage.style.display = 'none';
+            successMessage.style.display = 'none';
+
+            if (!username || !password) {
+                errorMessage.textContent = 'Please enter both username and password';
+                errorMessage.style.display = 'block';
+                return;
+            }
+
+            loader.style.display = 'flex';
+
+            await new Promise(resolve => setTimeout(resolve, 1000));
+
+            if (isLogin) {
+                if (users[username] && users[username] === password) {
+                    successMessage.textContent = 'Login successful!';
+                    successMessage.style.display = 'block';
+                    localStorage.setItem('currentUser', username);
+
+                    setTimeout(() => {
+                        loader.style.display = 'none';
+                        showContainer('chat');
+                        document.querySelector('.chat-input').style.display = 'flex';
+                        document.querySelector('.news-toggle').style.display = 'block';
+                        updateGoTopBtn();
+                    }, 500);
+                } else {
+                    loader.style.display = 'none';
+                    errorMessage.textContent = 'Invalid username or password';
+                    errorMessage.style.display = 'block';
+                }
+            } else {
+                if (users[username]) {
+                    loader.style.display = 'none';
+                    errorMessage.textContent = 'Username already exists';
+                    errorMessage.style.display = 'block';
+                } else {
+                    users[username] = password;
+                    localStorage.setItem('users', JSON.stringify(users));
+                    successMessage.textContent = 'Account created successfully! Please login.';
+                    successMessage.style.display = 'block';
+
+                    setTimeout(() => {
+                        loader.style.display = 'none';
+                        toggleAuth();
+                    }, 500);
+                }
+            }
+        }
 
 let replyToText = null;
-let currentUsername = localStorage.getItem('chat_username') || '';
 
-if (currentUsername && elements.usernameInput) {
-  elements.usernameInput.value = currentUsername;
-}
-
-document.addEventListener('DOMContentLoaded', () => {
-  const savedUser = localStorage.getItem('currentUser');
-  if (savedUser) {
-    localStorage.setItem('chat_username', savedUser);
-    document.getElementById('auth-container').style.display = 'none';
-    document.querySelector('.menu').style.display = 'flex';
-    document.querySelector('.news-toggle').style.display = 'block';
-    showContainer('chat');
-  } else {
-    document.getElementById('auth-container').style.display = 'flex';
-    document.querySelector('.menu').style.display = 'none';
-    document.querySelector('.news-toggle').style.display = 'none';
-  }
-  
-  if ('Notification' in window) {
-    Notification.requestPermission().then(permission => {
-      notificationPermissionGranted = permission === 'granted';
-    });
-  }
-  
-  initializeChat();
+document.querySelector('.chat-input button').addEventListener('touchstart', function (e) {
+    e.preventDefault();
+    sendMessage();
 });
 
-function toggleAuth() {
-  isLogin = !isLogin;
-  const authTitle = document.getElementById('auth-title');
-  const authButton = document.querySelector('.auth-box button');
-  const toggleText = document.getElementById('toggle-text');
-  const toggleLink = document.getElementById('toggle-link');
-
-  elements.errorDisplay.style.display = 'none';
-  elements.successDisplay.style.display = 'none';
-
-  if (isLogin) {
-    authTitle.textContent = 'Login';
-    authButton.textContent = 'Login';
-    toggleText.textContent = "Don't have an account? ";
-    toggleLink.textContent = 'Sign Up';
-  } else {
-    authTitle.textContent = 'Sign Up';
-    authButton.textContent = 'Sign Up';
-    toggleText.textContent = 'Already have an account? ';
-    toggleLink.textContent = 'Login';
-  }
-}
-
-function showSuccess(message) {
-  elements.successDisplay.textContent = message;
-  elements.successDisplay.style.display = 'block';
-  setTimeout(() => {
-    elements.successDisplay.style.display = 'none';
-  }, 3000);
-}
-
-function showError(message) {
-  elements.errorDisplay.textContent = message;
-  elements.errorDisplay.style.display = 'block';
-  setTimeout(() => {
-    elements.errorDisplay.style.display = 'none';
-  }, 3000);
-}
-
-async function handleAuth() {
-  const username = document.getElementById('auth-username').value.trim();
-  const password = document.getElementById('auth-password').value;
-  const loader = document.getElementById('loader');
-
-  elements.errorDisplay.style.display = 'none';
-  elements.successDisplay.style.display = 'none';
-
-  if (!username || !password) {
-    showError('Please enter both username and password');
-    return;
-  }
-
-  if (username.length < 3 || username.length > 20) {
-    showError('Username must be between 3-20 characters');
-    return;
-  }
-
-  if (password.length < 4 || password.length > 20) {
-    showError('Password must be between 4-20 characters');
-    return;
-  }
-
-  loader.style.display = 'flex';
-  
-  try {
-    // Simulate network delay
-    await new Promise(resolve => setTimeout(resolve, 500));
-
-    if (isLogin) {
-      // Login logic
-      if (users[username] && users[username] === password) {
-        showSuccess('Login successful!');
-        localStorage.setItem('currentUser', username);
-        localStorage.setItem('chat_username', username);
-        setTimeout(() => {
-          loader.style.display = 'none';
-          document.getElementById('auth-container').style.display = 'none';
-          document.querySelector('.menu').style.display = 'flex';
-          document.querySelector('.news-toggle').style.display = 'block';
-          showContainer('chat');
-          updateProfileSection();
-          initializeChat();
-        }, 500);
-      } else {
-        throw new Error('Invalid username or password');
-      }
-    } else {
-      // Signup logic
-      if (users[username]) {
-        throw new Error('Username already exists');
-      } else {
-        users[username] = password;
-        localStorage.setItem('users', JSON.stringify(users));
-        showSuccess('Account created successfully! Please login.');
-        setTimeout(() => {
-          loader.style.display = 'none';
-          toggleAuth();
-        }, 1000);
-      }
-    }
-  } catch (error) {
-    loader.style.display = 'none';
-    showError(error.message);
-  }
-}
-
-function showContainer(containerId) {
-  document.querySelectorAll('.container').forEach(c => c.style.display = 'none');
-  document.querySelectorAll('.chat-input').forEach(i => i.style.display = 'none');
-  
-  const container = document.getElementById(containerId);
-  if (container) {
-    container.style.display = 'block';
-    if (containerId === 'chat' || containerId === 'private-ai') {
-      container.querySelector('.chat-input').style.display = 'flex';
-    }
-  }
-}
-
-function initializeChat() {
-  currentUsername = localStorage.getItem('chat_username') || '';
-
-  if (elements.usernameInput) {
-    elements.usernameInput.value = currentUsername;
-    elements.usernameInput.addEventListener('input', (e) => {
-      currentUsername = e.target.value.trim();
-      localStorage.setItem('chat_username', currentUsername);
-    });
-  }
-
-  elements.messageInput.addEventListener('input', () => {
-    autoResize(elements.messageInput);
-    const hasText = elements.messageInput.value.trim().length > 0;
-    elements.sendButton.disabled = !hasText;
-    elements.sendButton.classList.toggle('enabled', hasText);
-  });
-
-  elements.messageInput.addEventListener('keypress', (e) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault();
-      sendMessage();
-    }
-  });
-
-  loadMessages();
-}
+document.getElementById('user-input').addEventListener('input', function () {
+    autoResize(this);
+    document.querySelector('.chat-input button').disabled = this.value.trim().length === 0;
+});
 
 function autoResize(textarea) {
-  textarea.style.height = 'auto';
-  textarea.style.height = (textarea.scrollHeight > 100 ? 100 : textarea.scrollHeight) + 'px';
+    textarea.style.height = 'auto';
+    textarea.style.height = (textarea.scrollHeight > 100 ? 100 : textarea.scrollHeight) + 'px';
 }
 
-function loadMessages() {
-  try {
-    const messages = JSON.parse(localStorage.getItem('chatMessages')) || [];
-    renderMessages(messages);
-  } catch (error) {
-    showError('Error loading messages');
-  }
+function handleTouchStart(e) {
+    isLongPress = false;
+    e.currentTarget.classList.add('no-select');
+    longPressTimer = setTimeout(() => {
+        isLongPress = true;
+        showMessageContextMenu(e);
+    }, 500);
 }
 
-function renderMessages(messages) {
-  elements.chatContainer.innerHTML = '';
-  messages.reverse().forEach(msg => {
-    const isOwn = msg.username?.trim().toLowerCase() === currentUsername?.trim().toLowerCase();
-    displayMessage(msg.content, isOwn ? 'sent' : 'received', msg.reply_to, msg.username, msg.id);
-  });
-  scrollToBottomIfNearBottom(elements.chatContainer);
+function handleTouchMove(e) {
+    clearTimeout(longPressTimer);
+    e.currentTarget.classList.remove('no-select');
 }
 
-function scrollToBottomIfNearBottom(container, threshold = 100) {
-  const isNearBottom = container.scrollHeight - container.scrollTop - container.clientHeight < threshold;
-  if (isNearBottom) {
-    container.scrollTop = container.scrollHeight;
-  }
+function handleTouchEnd(e) {
+    clearTimeout(longPressTimer);
+    e.currentTarget.classList.remove('no-select');
 }
 
-// Rest of your existing functions (displayMessage, sendMessage, etc.) remain the same
+function showMessageContextMenu(e) {
+    e.preventDefault();
+    const message = e.currentTarget || e.target.closest('.message');
+    if (!message) return;
 
-function showContainer(containerId) {
-  const containers = document.querySelectorAll('.container');
-  containers.forEach(container => {
-    container.style.display = 'none';
-  });
-  document.getElementById(containerId).style.display = 'block';
-  currentUsername = localStorage.getItem('chat_username') || '';
+    const contentDiv = message.querySelector('.content');
+    if (!contentDiv) return;
+
+    const messageText = contentDiv.textContent || '';
+
+    document.querySelectorAll('.message-context-menu').forEach(menu => menu.remove());
+
+    const contextMenu = document.createElement('div');
+    contextMenu.className = 'message-context-menu active';
+    contextMenu.style.left = `${(e.touches?.[0]?.pageX || e.clientX)}px`;
+    contextMenu.style.top = `${(e.touches?.[0]?.pageY || e.clientY)}px`;
+
+    const copyButton = document.createElement('button');
+    copyButton.textContent = 'Copy';
+    copyButton.onclick = () => {
+        copyToClipboard(messageText, copyButton);
+        contextMenu.remove();
+    };
+
+    const replyButton = document.createElement('button');
+    replyButton.textContent = 'Reply';
+    replyButton.onclick = () => {
+        const textarea = document.getElementById('user-input');
+        replyToText = messageText;
+        textarea.focus();
+        contextMenu.remove();
+        showReplyPreview();
+    };
+
+    contextMenu.appendChild(copyButton);
+    contextMenu.appendChild(replyButton);
+    document.body.appendChild(contextMenu);
+
+    document.addEventListener('click', () => contextMenu.remove(), { once: true });
 }
 
-function initializeChat() {
-  currentUsername = localStorage.getItem('chat_username') || '';
+function showReplyPreview() {
+    const replyContainer = document.getElementById('reply-preview-container');
+    replyContainer.innerHTML = `
+        <div class="reply-preview">
+            Replying to: ${replyToText.substring(0, 80)}
+            <button onclick="clearReply()" style="float:right; font-size:12px;">✕</button>
+        </div>
+    `;
+}
 
-  if (elements.usernameInput) {
-    elements.usernameInput.value = currentUsername;
-    elements.usernameInput.addEventListener('input', (e) => {
-      currentUsername = e.target.value.trim();
-      localStorage.setItem('chat_username', currentUsername);
+function clearReply() {
+    replyToText = null;
+    document.getElementById('reply-preview-container').innerHTML = '';
+}
+
+function displayMessage(text, sender, repliedTo = null) {
+    const chatContainer = document.getElementById('chat-container');
+    const messageDiv = document.createElement('div');
+    messageDiv.className = `message ${sender}`;
+
+    const avatarDiv = document.createElement('div');
+    avatarDiv.className = 'avatar';
+
+    const contentDiv = document.createElement('div');
+    contentDiv.className = 'content';
+
+    if (repliedTo) {
+        const replyBubble = document.createElement('div');
+        replyBubble.className = 'reply-preview';
+        replyBubble.textContent = repliedTo;
+        contentDiv.appendChild(replyBubble);
+    }
+
+    messageDiv.addEventListener('touchstart', handleTouchStart);
+    messageDiv.addEventListener('touchend', handleTouchEnd);
+    messageDiv.addEventListener('touchmove', handleTouchMove);
+    messageDiv.addEventListener('contextmenu', e => {
+        e.preventDefault();
+        showMessageContextMenu(e);
     });
-  }
 
-  elements.messageInput.addEventListener('input', () => {
-    autoResize(elements.messageInput);
-    const hasText = elements.messageInput.value.trim().length > 0;
-    elements.sendButton.disabled = !hasText;
-    elements.sendButton.classList.toggle('enabled', hasText);
-  });
-
-  elements.messageInput.addEventListener('keypress', (e) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault();
-      sendMessage();
-    }
-  });
-
-  loadMessages();
-  setInterval(loadMessages, 3000);
-}
-
-function autoResize(textarea) {
-  textarea.style.height = 'auto';
-  textarea.style.height = (textarea.scrollHeight > 100 ? 100 : textarea.scrollHeight) + 'px';
-}
-
-async function loadMessages() {
-  try {
-    const response = await fetch('/messages');
-    if (!response.ok) throw new Error('Failed to load messages');
-    const data = await response.json();
-    
-    // Check for new messages to show notification
-    if (data.length > 0) {
-      const latestMessage = data[0];
-      if (latestMessage.id !== lastMessageId && 
-          latestMessage.username !== currentUsername &&
-          document.visibilityState !== 'visible') {
-        showNotification(latestMessage.username, latestMessage.content);
-      }
-      lastMessageId = latestMessage.id;
-    }
-    
-    renderMessages(data);
-  } catch (error) {
-    showError(error.message);
-  }
-}
-
-function showNotification(username, message) {
-  if (!notificationPermissionGranted || !('Notification' in window)) return;
-  
-  const notification = new Notification(`${username} says:`, {
-    body: message.length > 50 ? message.substring(0, 50) + '...' : message,
-    icon: 'https://i.pravatar.cc/50?u=' + encodeURIComponent(username)
-  });
-  
-  notification.onclick = () => {
-    window.focus();
-  };
-}
-
-function renderMessages(messages) {
-  elements.chatContainer.innerHTML = '';
-  messages.reverse().forEach(msg => {
-    const isOwn = msg.username?.trim().toLowerCase() === currentUsername?.trim().toLowerCase();
-    displayMessage(msg.content, isOwn ? 'sent' : 'received', msg.reply_to, msg.username, msg.id);
-  });
-  scrollToBottomIfNearBottom(elements.chatContainer);
-}
-
-function scrollToBottomIfNearBottom(container, threshold = 100) {
-  const isNearBottom = container.scrollHeight - container.scrollTop - container.clientHeight < threshold;
-  if (isNearBottom) {
-    container.scrollTop = container.scrollHeight;
-  }
-}
-// private ai
-function displayPrivateMessage(text, sender, repliedTo = null, username = 'Private AI', messageId = null) {
-  const container = document.getElementById('private-ai-container');
-  const messageDiv = document.createElement('div');
-  messageDiv.className = `message ${sender}`;
-  
-  const avatarDiv = document.createElement('div');
-  avatarDiv.className = 'avatar';
-  avatarDiv.innerHTML = `<img src="https://i.pravatar.cc/50?u=${encodeURIComponent(username)}" alt="avatar">`;
-
-  const messageBody = document.createElement('div');
-  messageBody.className = 'message-body';
-
-  if (username && sender === 'received') {
-    const usernameDiv = document.createElement('div');
-    usernameDiv.className = 'username';
-    usernameDiv.textContent = username;
-    messageBody.appendChild(usernameDiv);
-  }
-
-  const contentDiv = document.createElement('div');
-  contentDiv.className = 'content';
-  contentDiv.textContent = text;
-  messageBody.appendChild(contentDiv);
-
-  if (sender === 'sent') {
-    messageDiv.appendChild(messageBody);
-  } else {
-    messageDiv.appendChild(avatarDiv);
-    messageDiv.appendChild(messageBody);
-  }
-
-  container.appendChild(messageDiv);
-  container.scrollTop = container.scrollHeight;
-} 
-    
-function displayMessage(text, sender, repliedTo = null, username = '', messageId = null) {
-  const messageDiv = document.createElement('div');
-  messageDiv.className = `message ${sender}`;
-  messageDiv.dataset.id = messageId;
-  messageDiv.dataset.content = text;
-
-  const avatarDiv = document.createElement('div');
-  avatarDiv.className = 'avatar';
-  avatarDiv.innerHTML = `<img src="https://i.pravatar.cc/50?u=${encodeURIComponent(username)}" alt="avatar">`;
-
-  const messageBody = document.createElement('div');
-  messageBody.className = 'message-body';
-
-  // Only show username for received messages
-  if (username && sender === 'received') {
-    const usernameDiv = document.createElement('div');
-    usernameDiv.className = 'username';
-    usernameDiv.textContent = username;
-    messageBody.appendChild(usernameDiv);
-  }
-
-  // Rest of the function remains the same...
-  const contentDiv = document.createElement('div');
-  contentDiv.className = 'content';
-
-  if (repliedTo) {
-    const replyBubble = document.createElement('div');
-    replyBubble.className = 'reply-preview';
-    replyBubble.textContent = repliedTo;
-    contentDiv.appendChild(replyBubble);
-  }
-
-  const imagePattern = /(https?:\/\/[^\s]+\.(?:png|jpe?g|gif|webp))/gi;
-  const audioPattern = /(https?:\/\/[^\s]+\.(?:mp3|ogg|wav|m4a|mp4))/gi;
+    const imagePattern = /(https?:\/\/[^\s]+\.(?:png|jpe?g|gif|webp))/gi;
+  const audioPattern = /(https?:\/\/[^\s]+\.(?:mp3|ogg|wav|m4a))/gi;
+  const videoPattern = /(https?:\/\/[^\s]+\.(?:mp4|webm|ogg))/gi;
 
   const imageMatches = [...text.matchAll(imagePattern)];
   const audioMatches = [...text.matchAll(audioPattern)];
+  const videoMatches = [...text.matchAll(videoPattern)];
 
   let modifiedText = text;
-  [...imageMatches, ...audioMatches].forEach(match => {
+  [...imageMatches, ...audioMatches, ...videoMatches].forEach(match => {
     modifiedText = modifiedText.replace(match[0], '');
   });
 
@@ -1440,318 +1132,86 @@ function displayMessage(text, sender, repliedTo = null, username = '', messageId
     contentDiv.appendChild(audio);
   });
 
-  messageBody.appendChild(contentDiv);
-
-  if (sender === 'sent') {
-    messageDiv.appendChild(messageBody);
-    // Don't append avatar for sent messages
-  } else {
-    messageDiv.appendChild(avatarDiv);
-    messageDiv.appendChild(messageBody);
-  }
-
-  elements.chatContainer.appendChild(messageDiv);
-
-  messageDiv.addEventListener('touchstart', handleTouchStart);
-  messageDiv.addEventListener('touchend', handleTouchEnd);
-  messageDiv.addEventListener('touchmove', handleTouchMove);
-  messageDiv.addEventListener('contextmenu', (e) => {
-    e.preventDefault();
-    showMessageContextMenu(e, messageDiv);
+  videoMatches.forEach(match => {
+    const video = document.createElement('video');
+    video.controls = true;
+    video.src = match[0];
+    video.className = 'chat-video';
+    contentDiv.appendChild(video);
   });
+
+    messageDiv.appendChild(avatarDiv);
+    messageDiv.appendChild(contentDiv);
+    chatContainer.appendChild(messageDiv);
+    chatContainer.scrollTop = chatContainer.scrollHeight;
+
+    return messageDiv; // <=== return the div!
 }
 
-async function sendMessage() {
-  const content = elements.messageInput.value.trim();
-  currentUsername = localStorage.getItem('chat_username') || '';
-  const username = currentUsername;
+async function fetchChatResponse(userInput, waitingMsg = null) {
+    try {
+        const response = await fetch('/api/command', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ message: userInput }),
+        });
 
-  if (!content || !username) {
-    return showError('Please enter both username and message');
-  }
+        const data = await response.json();
 
-  const lowerContent = content.toLowerCase();
-  if (badWords.some(word => lowerContent.includes(word))) {
-    if (!warnedUsers[username]) {
-      warnedUsers[username] = true;
-      return showError('Warning: bad word detected! If you repeat, you will be banned.');
-    } else {
-      bannedUsers[username] = Date.now() + BAN_DURATION;
-      delete users[username];
-      localStorage.setItem('users', JSON.stringify(users));
-      localStorage.removeItem('currentUser');
-      localStorage.removeItem('chat_username');
-      showError('You used bad words again. Account deleted and banned.');
-      setTimeout(() => {
-        location.reload();
-      }, 2000);
-      return;
+        if (waitingMsg) {
+            waitingMsg.remove(); // Remove waiting message when reply arrives
+        }
+
+        if (data.reply) {
+            if (Array.isArray(data.reply)) {
+                data.reply.forEach(reply => displayMessage(reply, 'received'));
+            } else {
+                displayMessage(data.reply, 'received');
+            }
+        }
+    } catch (error) {
+        console.error("Error fetching AI response:", error);
+        if (waitingMsg) {
+            waitingMsg.remove();
+        }
+        displayMessage("❌ | Failed to fetch response. Please try again.", 'received');
     }
-  }
-
-  const now = Date.now();
-  if (bannedUsers[username] && bannedUsers[username] > now) {
-    return showError(`You're banned. Wait ${Math.ceil((bannedUsers[username] - now) / 1000)}s.`);
-  }
-
-  if (!spamTracker[username]) {
-    spamTracker[username] = [];
-  }
-
-  spamTracker[username].push(now);
-  spamTracker[username] = spamTracker[username].filter(ts => now - ts <= SPAM_WINDOW);
-
-  if (spamTracker[username].length > SPAM_LIMIT) {
-    bannedUsers[username] = now + BAN_DURATION;
-    return showError("You're banned for spamming.");
-  }
-
-  try {
-    elements.sendButton.disabled = true;
-    elements.sendButton.classList.remove('enabled');
-
-    const payload = { content, username, reply_to: replyToText || null };
-    const response = await fetch('/messages', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload)
-    });
-    if (!response.ok) throw new Error('Failed to send message');
-    displayMessage(content, 'sent', replyToText, username);
-    fetchChatResponse(content);
-    elements.messageInput.value = '';
-    autoResize(elements.messageInput);
-    clearReply();
-  } catch (error) {
-    showError(error.message);
-  } finally {
-    elements.sendButton.disabled = true;
-    elements.sendButton.classList.remove('enabled');
-  }
-}
-async function sendPrivateMessage() {
-  const input = document.getElementById('private-user-input');
-  const content = input.value.trim();
-  
-  if (!content) return;
-
-  // Display user message
-  displayPrivateMessage(content, 'sent');
-  input.value = '';
-  autoResize(input);
-
-  // Get AI response
-  await fetchPrivateAIResponse(content);
-}
-async function fetchChatResponse(userInput) {
-  try {
-    const response = await fetch('/api/command', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ message: userInput }),
-    });
-
-    const data = await response.json();
-    if (data.reply) {
-      if (Array.isArray(data.reply)) {
-        data.reply.forEach(reply => displayMessage(reply, 'received'));
-      } else {
-        displayMessage(data.reply, 'received');
-      }
-    }
-  } catch (error) {
-    console.error("Error fetching AI response:", error);
-  }
-}
-    
-async function fetchPrivateAIResponse(userInput) {
-  try {
-    const response = await fetch('/api/private', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ message: userInput }),
-    });
-
-    const data = await response.json();
-    if (data.reply) {
-      // Display in private AI container
-      if (Array.isArray(data.reply)) {
-        data.reply.forEach(reply => displayPrivateMessage(reply, 'received'));
-      } else {
-        displayPrivateMessage(data.reply, 'received');
-      }
-    }
-  } catch (error) {
-    console.error("Error fetching Private AI response:", error);
-    displayPrivateMessage("Error connecting to Private AI", 'received');
-  }
-}
-    
-function handleTouchStart(e) {
-  isLongPress = false;
-  e.currentTarget.classList.add('no-select');
-  longPressTimer = setTimeout(() => {
-    isLongPress = true;
-    showMessageContextMenu(e, e.currentTarget);
-  }, 500);
 }
 
-function handleTouchMove(e) {
-  clearTimeout(longPressTimer);
-  e.currentTarget.classList.remove('no-select');
-}
+function sendMessage() {
+    const textarea = document.getElementById('user-input');
+    const userInput = textarea.value.trim();
+    if (userInput) {
+        displayMessage(userInput, 'sent', replyToText);
+        textarea.value = '';
+        autoResize(textarea);
+        document.querySelector('.chat-input button').disabled = true;
+        clearReply();
 
-function handleTouchEnd(e) {
-  clearTimeout(longPressTimer);
-  e.currentTarget.classList.remove('no-select');
-}
-
-function showError(message) {
-  if (elements.errorDisplay) {
-    elements.errorDisplay.textContent = message;
-    elements.errorDisplay.style.display = 'block';
-    setTimeout(() => {
-      elements.errorDisplay.style.display = 'none';
-    }, 3000);
-  } else {
-    alert(message);
-  }
-}
-
-function clearReply() {
-  replyToText = null;
-  if (elements.replyPreview) {
-    elements.replyPreview.style.display = 'none';
-    elements.replyPreview.textContent = '';
-  }
-}
-
-// Track page visibility for notifications
-document.addEventListener('visibilitychange', () => {
-  if (document.visibilityState === 'visible') {
-    // When page becomes visible, update lastMessageId to prevent duplicate notifications
-    if (elements.chatContainer.lastChild) {
-      lastMessageId = elements.chatContainer.lastChild.dataset.id;
-    }
-  }
-});
-  function showMessageContextMenu(e, message) {  
-    const messageText = message.dataset.content || '';  
-    const messageId = message.dataset.id;  
-
-    document.querySelectorAll('.message-context-menu').forEach(menu => menu.remove());  
-
-    const contextMenu = document.createElement('div');  
-    contextMenu.className = 'message-context-menu active';  
-    contextMenu.style.left = `${(e.touches?.[0]?.pageX || e.clientX)}px`;  
-    contextMenu.style.top = `${(e.touches?.[0]?.pageY || e.clientY)}px`;  
-
-    const copyButton = document.createElement('button');  
-    copyButton.textContent = 'Copy';  
-    copyButton.onclick = () => {  
-      copyToClipboard(messageText, copyButton);  
-      contextMenu.remove();  
-    };  
-
-    const replyButton = document.createElement('button');  
-    replyButton.textContent = 'Reply';  
-    replyButton.onclick = () => {  
-      replyToText = messageText;  
-      elements.messageInput.focus();  
-      showReplyPreview();  
-      contextMenu.remove();  
-    };  
-
-    contextMenu.appendChild(copyButton);  
-    contextMenu.appendChild(replyButton);  
-
-    if (messageId && message.classList.contains('sent')) {  
-      const deleteButton = document.createElement('button');  
-      deleteButton.textContent = 'Delete';  
-      deleteButton.onclick = async () => {  
-        try {  
-          const response = await fetch(`/messages/${messageId}`, {  
-            method: 'DELETE'  
-          });  
-          if (!response.ok) throw new Error('Delete failed');  
-          message.remove();  
-        } catch (err) {  
-          showError(err.message);  
-        }  
-        contextMenu.remove();  
-      };  
-      contextMenu.appendChild(deleteButton);  
-    }  
-
-    document.body.appendChild(contextMenu);  
-    document.addEventListener('click', () => contextMenu.remove(), { once: true });  
-  }  
-
-  function showReplyPreview() {  
-    elements.replyPreview.innerHTML = `  
-      <div class="reply-preview">  
-        Replying to: ${replyToText.substring(0, 80)}  
-        <button onclick="clearReply()" style="float:right; font-size:12px;">✕</button>  
-      </div>  
-    `;  
-  }  
-
-  function clearReply() {  
-    replyToText = null;  
-    elements.replyPreview.innerHTML = '';  
-  }  
-function showContainer(containerId) {
-    // Hide all containers
-    document.querySelectorAll('.container').forEach(container => {
-        container.style.display = 'none';
-    });
-    
-    // Hide all chat inputs
-    document.querySelectorAll('.chat-input').forEach(input => {
-        input.style.display = 'none';
-    });
-    
-    // Show the selected container
-    const container = document.getElementById(containerId);
-    if (container) {
-        container.style.display = 'block';
-        
-        // If it's a chat container, show its input
-        if (containerId === 'chat' || containerId === 'private-ai') {
-            container.querySelector('.chat-input').style.display = 'flex';
+        // Check if the message is a command (starts with "/")
+        if (userInput.startsWith("/")) {
+            const waitingMsg = displayMessage("🔄 | Please wait, processing your command...", 'received');
+            fetchChatResponse(userInput, waitingMsg);
+        } else {
+            fetchChatResponse(userInput);
         }
     }
-    
-    // Hide auth container if showing
-    document.getElementById('auth-container').style.display = 'none';
-    
-    // Show menu if logged in
-    if (localStorage.getItem('currentUser')) {
-        document.querySelector('.menu').style.display = 'flex';
-    }
 }
-  function copyToClipboard(text, button) {  
-    const textarea = document.createElement('textarea');  
-    textarea.value = text;  
-    document.body.appendChild(textarea);  
-    textarea.select();  
-    document.execCommand('copy');  
-    document.body.removeChild(textarea);  
 
-    button.innerHTML = '<span style="font-size: 15px;">Copied!</span>';  
-    setTimeout(() => {  
-      button.innerHTML = 'Copy';  
-    }, 2000);  
-  }  
+  function copyToClipboard(text, button) {
+        const textarea = document.createElement('textarea');
+        textarea.value = text;
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textarea);
 
-  function showError(msg) {  
-    if (!elements.errorDisplay) return;  
-    elements.errorDisplay.textContent = msg;  
-    elements.errorDisplay.style.display = 'block';  
-    setTimeout(() => {  
-      elements.errorDisplay.style.display = 'none';  
-    }, 3000);  
-  }  
+        button.innerHTML = '<span style="font-size: 15px;">Copied!</span>';
+        setTimeout(() => {
+            button.innerHTML = '<span style="font-size: 14px;">Copy</span>';
+        }, 3000);
+    }
+
 
            function toggleKebabMenu(event) {
             event.stopPropagation();
@@ -1998,20 +1458,6 @@ function closeZoom() {
             autoResize(this);
             document.querySelector('.chat-input button').disabled = this.value.trim().length === 0;
         });
-    
-      // Add this to your existing initialization code
-document.getElementById('private-user-input').addEventListener('input', function() {
-    autoResize(this);
-    this.nextElementSibling.disabled = this.value.trim().length === 0;
-    this.nextElementSibling.classList.toggle('enabled', this.value.trim().length > 0);
-});
-
-document.getElementById('private-user-input').addEventListener('keypress', function(e) {
-    if (e.key === 'Enter' && !e.shiftKey) {
-        e.preventDefault();
-        sendPrivateMessage();
-    }
-});
 
         function autoResize(textarea) {
             textarea.style.height = 'auto';
@@ -2065,158 +1511,44 @@ document.getElementById('private-user-input').addEventListener('keypress', funct
             }
         }
 
-      // Add this function to update the profile section
-function updateProfileSection() {
-    const dropdown = document.getElementById('dropdown');
-    const currentUsername = localStorage.getItem('currentUser');
-    
-    // Remove existing profile section if it exists
-    const existingProfile = document.querySelector('.profile-section');
-    const existingDivider = document.querySelector('.menu-divider');
-    if (existingProfile) existingProfile.remove();
-    if (existingDivider) existingDivider.remove();
-    
-    // Only add profile section if user is logged in
-    if (currentUsername) {
-        const profileSection = document.createElement('div');
-        profileSection.className = 'profile-section';
-        profileSection.innerHTML = `
-            <div class="profile-avatar">
-                <img src="https://i.pravatar.cc/50?u=${encodeURIComponent(currentUsername)}" alt="Profile">
-            </div>
-            <div class="profile-username">${currentUsername}</div>
-        `;
-        
-        const divider = document.createElement('div');
-        divider.className = 'menu-divider';
-        
-        // Insert at the beginning of dropdown
-        dropdown.insertBefore(divider, dropdown.firstChild);
-        dropdown.insertBefore(profileSection, dropdown.firstChild);
-    }
-}
-document.addEventListener('click', function(event) {
-    const dropdown = document.getElementById('dropdown');
-    const hamburger = document.querySelector('.hamburger');
-    
-    // Close dropdown if clicking outside of it and not on the hamburger
-    if (dropdown.style.display === 'block' && 
-        !dropdown.contains(event.target) && 
-        event.target !== hamburger) {
-        dropdown.style.display = 'none';
-    }
-});
-// Then modify your handleAuth function's success case to call this:
-// In the login success case, add this line:
-updateProfileSection();
+        function logout() {
+            localStorage.removeItem('currentUser');
+            document.getElementById('auth-container').style.display = 'flex';
+            document.querySelector('.menu').style.display = 'none';
+            document.querySelector('.chat-input').style.display = 'none';
+            document.getElementById('dropdown').style.display = 'none';
+            document.querySelector('.news-toggle').style.display = 'none';
+            document.querySelector('.news-container').style.display = 'none';
+            document.querySelectorAll('.container').forEach(container => container.classList.remove('active'));
+            updateGoTopBtn();
+        }
 
-// Also modify your logout function to properly clear the profile:
-function logout() {
-    localStorage.removeItem('currentUser');
-    
-    // Hide all containers and menu
-    document.querySelectorAll('.container').forEach(container => {
-        container.style.display = 'none';
-    });
-    document.querySelector('.menu').style.display = 'none';
-    
-    // Hide all chat inputs
-    document.querySelectorAll('.chat-input').forEach(input => {
-        input.style.display = 'none';
-    });
-    
-    // Show auth container
-    document.getElementById('auth-container').style.display = 'flex';
-    
-    // Hide news toggle
-    document.querySelector('.news-toggle').style.display = 'none';
-    document.querySelector('.news-container').style.display = 'none';
-    
-    // Clear profile section
-    const profileSection = document.querySelector('.profile-section');
-    const divider = document.querySelector('.menu-divider');
-    if (profileSection) profileSection.remove();
-    if (divider) divider.remove();
-    
-    // Close the dropdown menu
-    document.getElementById('dropdown').style.display = 'none';
-    
-    updateGoTopBtn();
-}
-   function toggleDropdown() {
+        function toggleDropdown() {
             const dropdown = document.getElementById('dropdown');
             dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
         }
 
-         // ... after your variable declarations ...
+        function showContainer(containerId) {
+            if (containerId === 'chat') {
+                const containers = document.querySelectorAll('.container');
+                containers.forEach(container => container.classList.remove('active'));
+                const selectedContainer = document.getElementById(containerId);
+                selectedContainer.classList.add('active');
+            } else {
+                document.getElementById(containerId).style.display = 'block';
+                document.getElementById('overlay').style.display = 'block';
+            }
 
-function showContainer(containerId) {
-    // Hide all containers
-    document.querySelectorAll('.container').forEach(container => {
-        container.style.display = 'none';
-    });
-    
-    // Hide all chat inputs
-    document.querySelectorAll('.chat-input').forEach(input => {
-        input.style.display = 'none';
-    });
-    
-    // Show the selected container
-    const container = document.getElementById(containerId);
-    if (container) {
-        container.style.display = 'block';
-        
-        // Show its input if it's a chat container
-        if (containerId === 'chat' || containerId === 'private-ai') {
-            container.querySelector('.chat-input').style.display = 'flex';
+            document.getElementById('dropdown').style.display = 'none';
+            document.getElementById('auth-container').style.display = 'none';
+            document.querySelector('.menu').style.display = 'flex';
         }
-    }
-    
-    // Hide the dropdown menu
-    document.getElementById('dropdown').style.display = 'none';
-    
-    // Hide auth container if showing
-    document.getElementById('auth-container').style.display = 'none';
-    
-    // Show menu if logged in
-    if (localStorage.getItem('currentUser')) {
-        document.querySelector('.menu').style.display = 'flex';
-    }
-}
 
-// Then continue with your other functions like initializeChat(), etc...
-  
-    // hide container
-    
         function hideContainer(containerId) {
-    document.getElementById(containerId).style.display = 'none';
-    document.getElementById('overlay').style.display = 'none';
-    
-    // Show chat container and input after closing any section
-    showContainer('chat');
-}
-         function showContainer(containerId) {
-    const containers = document.querySelectorAll('.container');
-    containers.forEach(container => {
-        container.style.display = 'none';
-    });
-    
-    // Hide all chat inputs first
-    document.querySelectorAll('.chat-input').forEach(input => {
-        input.style.display = 'none';
-    });
-    
-    // Show the selected container
-    document.getElementById(containerId).style.display = 'block';
-    
-    // Show the appropriate chat input
-    if (containerId === 'chat' || containerId === 'private-ai') {
-        document.querySelector(`#${containerId} .chat-input`).style.display = 'flex';
-    }
-    
-    currentUsername = localStorage.getItem('chat_username') || '';
-}
-   
+            document.getElementById(containerId).style.display = 'none';
+            document.getElementById('overlay').style.display = 'none';
+        }
+
     function openZoom(src) {
     document.body.style.overflow = 'hidden';
     const overlay = document.getElementById('zoom-overlay');
@@ -2231,17 +1563,70 @@ function closeZoom() {
 }
 
         document.getElementById('overlay').addEventListener('click', function() {
-    document.querySelectorAll('.about-container, .features-container, .help-container').forEach(container => {
-        container.style.display = 'none';
-    });
-    this.style.display = 'none';
-    showContainer('chat'); // Show chat after closing
-});
+            document.querySelectorAll('.about-container, .features-container, .help-container').forEach(container => {
+                container.style.display = 'none';
+            });
+            this.style.display = 'none';
+        });
+
         const currentUser = localStorage.getItem('currentUser');
         if (currentUser) {
             showContainer('chat');
             document.querySelector('.chat-input').style.display = 'flex';
         }
+// Improved URL detection pattern that handles more cases
+const URL_PATTERN = /https?:\/\/[^\s<>]+(?:\b|$)/g;
 
+// Updated highlight function that processes all URLs
+function highlightLinksInElement(element) {
+    if (!element || element.querySelector('img, audio, video, a')) return;
+    
+    const text = element.textContent;
+    if (!text) return;
+    
+    // Replace all URLs with anchor tags
+    const html = text.replace(URL_PATTERN, url => {
+        // Clean URL by removing trailing punctuation
+        const cleanUrl = url.replace(/[.,;!?]+$/, '');
+        return `<a href="${cleanUrl}" target="_blank" style="color: #0066cc; text-decoration: underline;">${cleanUrl}</a>`;
+    });
+    
+    // Only update if we found URLs
+    if (html !== text) {
+        element.innerHTML = html;
+    }
+}
+
+// Update the displayMessage function to ensure it processes all text nodes
+const originalDisplayMessage = displayMessage;
+displayMessage = function(text, sender, repliedTo = null) {
+    const messageElement = originalDisplayMessage.call(this, text, sender, repliedTo);
+    const contentDiv = messageElement.querySelector('.content');
+    
+    // Process all text nodes in the content div
+    const textNodes = [];
+    const walker = document.createTreeWalker(
+        contentDiv,
+        NodeFilter.SHOW_TEXT,
+        null,
+        false
+    );
+    
+    let node;
+    while (node = walker.nextNode()) {
+        textNodes.push(node);
+    }
+    
+    textNodes.forEach(node => {
+        if (URL_PATTERN.test(node.nodeValue)) {
+            const span = document.createElement('span');
+            span.textContent = node.nodeValue;
+            highlightLinksInElement(span);
+            node.parentNode.replaceChild(span, node);
+        }
+    });
+    
+    return messageElement;
+};
     </script>
 </html>
